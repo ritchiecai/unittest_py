@@ -1,0 +1,285 @@
+import "google/protobuf/descriptor.proto";
+
+package focusphoto;
+
+option py_generic_services = true;
+
+extend google.protobuf.MethodOptions{
+    optional string method_option = 50000;
+    optional string url_option = 50001;
+}
+
+extend google.protobuf.FieldOptions {
+    optional bool is_file = 50002;
+}
+
+
+message FocusPhotoCreateReq {
+    optional string name = 1;
+    optional int32 type = 2;
+    optional string jump = 3;
+    optional bytes image = 4 [(is_file) = true];
+}
+
+message BaseResp {
+    optional int32 ret = 1;
+    optional string ret_msg = 2;
+}
+
+message BaseRespWithData {
+    optional int32 ret = 1;
+    optional string ret_msg = 2;
+    
+    message RespContent {
+        optional int32 id = 1;
+    }
+    
+    optional RespContent data = 3;
+}
+
+message FocusPhotoModifyReq {
+    optional int32 id = 1;
+    optional string name = 2;
+    optional bytes image = 3;
+    optional int32 type = 4;
+    optional string jump = 5;
+}
+
+message FocusPhotoDelReq {
+    optional int32 id = 1;
+}
+
+message FocusPhotoViewReq {
+    optional int32 id = 1;
+    optional string ids = 2;
+}
+
+message FocusPhotoViewResp {
+    optional int32 ret = 1;
+    optional string ret_msg = 2;
+
+    message Resp {
+        optional int32 count = 1;
+
+        message Content {
+            optional int32 id = 1;
+            optional string name = 2;
+            optional string image = 3;
+            optional int32 type = 4;
+            optional string jump = 5;
+            optional int32 last_modify = 6;
+        }
+
+        repeated Content list = 2;
+    }
+
+    optional Resp data = 3;
+}
+
+message FocusPhotoSearchReq {
+    optional string query = 1;
+    optional int32 start = 2;
+    optional int32 count = 3;
+}
+
+message FocusPhotoSearchResp {
+    optional int32 ret = 1;
+    optional string ret_msg = 2;
+
+    message Resp {
+        optional int32 start = 1;
+        optional int32 count = 2;
+        optional int32 total = 3;
+
+        message Content {
+            optional int32 id = 1;
+            optional string name = 2;
+            optional string image = 3;
+            optional int32 type = 4;
+            optional string jump = 5;
+            optional int32 last_modify = 6;
+        }
+
+        repeated Content list = 4;
+    }
+
+    optional Resp data = 3;
+}
+            
+
+service FocusPhotoService {
+    rpc Create(FocusPhotoCreateReq) returns(BaseRespWithData) {
+        option (method_option) = "POST";
+        option (url_option) = "focus_photo/create";
+    }
+
+    rpc Modify(FocusPhotoModifyReq) returns(BaseRespWithData) {
+        option (method_option) = "POST";
+        option (url_option) = "focus_photo/modify";
+    }
+
+    rpc Del(FocusPhotoDelReq) returns(BaseResp) {
+        option (method_option) = "POST";
+        option (url_option) = "focus_photo/del";
+    }
+
+    rpc View(FocusPhotoViewReq) returns(FocusPhotoViewResp) {
+        option (method_option) = "GET";
+        option (url_option) = "focus_photo/view";
+    }
+
+    rpc Search(FocusPhotoSearchReq) returns(FocusPhotoSearchResp) {
+        option (method_option) = "GET";
+        option (url_option) = "focus_photo/search";
+    }
+
+}
+
+
+message TopArtistListReq {
+    optional int32 region_id = 1;
+}
+
+message TopArtistListResp {
+    optional int32 ret = 1;
+    optional string ret_msg = 2;
+
+    message Resp {
+        optional int32 region_id = 1;
+
+        message Content {
+            optional int32 id = 1;
+            optional string name = 2;
+            optional string image = 3;
+            optional int32 type = 4;
+            optional int32 nationality = 5;
+            optional string desc = 6;
+            optional int32 company_id = 7;
+            repeated string other_name = 8;
+            optional int32 status = 9;
+            optional int32 has_local = 10;
+            optional string local_name = 11;
+            optional string local_image = 12;
+            optional string local_desc = 13;
+            repeated string local_other_name = 14;
+        }
+        
+        repeated Content list = 2;
+    }
+
+    optional Resp data = 3;
+}
+
+
+message TopArtistUpdateReq {
+    optional int32 region_id = 1;
+    repeated int32 list = 2;
+}
+
+service TopArtistService {
+    rpc Update(TopArtistUpdateReq) returns(BaseRespWithData) {
+        option (method_option) = "POST";
+        option (url_option) = "top_artist/update";
+    }
+
+    rpc List(TopArtistListReq) returns(TopArtistListResp) {
+        option (method_option) = "GET";
+        option (url_option) = "top_artist/list";
+    }
+}
+
+
+message HotArtistClassListReq {
+    optional int32 region_id = 1;
+}
+
+message HotArtistClassListResp {
+    optional int32 ret = 1;
+    optional string ret_msg = 2;
+
+    message Resp {
+        message Content {
+            optional int32 id = 1;
+            optional string name = 2;
+        }
+
+        repeated Content list = 1;
+    }
+
+    optional Resp data = 3;
+}
+
+message HotArtistClassSearchReq {
+    optional int32 region_id = 1;
+    optional int32 cid = 2;
+    optional int32 start = 3;
+    optional int32 count = 4;
+    optional string query = 5;
+}
+
+message HotArtistClassSearchResp {
+    optional int32 ret = 1;
+    optional string ret_msg = 2;
+
+    message Resp {
+        optional int32 start = 1;
+        optional int32 count = 2;
+        optional int32 total = 3;
+        optional string name = 4;
+
+        message Content {
+            optional int32 id = 1;
+            optional string name = 2;
+            optional string image = 3;
+            optional int32 type = 4;
+            optional int32 nationality = 5;
+            optional string desc = 6;
+            optional int32 company_id = 7;
+            repeated string other_name = 8;
+            optional int32 status = 9;
+            optional int32 has_local = 10;
+            optional string local_name = 11;
+            optional string local_image = 12;
+            optional string local_desc = 13;
+            repeated string local_other_name = 14;
+            optional int32 hot_score = 15;
+            optional int32 hot_base = 16;
+            optional int32 hot_index = 17;
+            optional string company_name = 18;
+        }
+
+        repeated Content list = 5;
+    }
+
+    optional Resp data = 3;
+}
+
+message HotArtistClassSetIncreReq {
+    optional int32 region_id = 1;
+    optional int32 cid = 2;
+    optional int32 sid = 3;
+    optional int32 incr = 4;
+}
+
+
+service HotArtistClassService {
+    rpc Set_Artist_Incremental(HotArtistClassSetIncreReq) returns(BaseRespWithData) {
+        option (method_option) = "POST";
+        option (url_option) = "hot_artist_class/set_artist_incremental";
+    }
+
+    rpc List(HotArtistClassListReq) returns(HotArtistClassListResp) {
+        option (method_option) = "GET";
+        option (url_option) = "hot_artist_class/list";
+    }
+
+    rpc Search(HotArtistClassSearchReq) returns(HotArtistClassSearchResp) {
+        option (method_option) = "GET";
+        option (url_option) = "hot_artist_class/search";
+    }
+}
+
+
+    
+
+
